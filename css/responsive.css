@@ -1,0 +1,151 @@
+/* Estilos para dispositivos móviles pequeños */
+@media (max-width: 480px) {
+    header .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    nav ul {
+        margin-top: 1rem;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .pokemon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .filters {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 1rem;
+    }
+}
+
+/* Estilos para tablets y dispositivos móviles medianos */
+@media (min-width: 481px) and (max-width: 768px) {
+    .pokemon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+    
+    .filters {
+        flex-wrap: wrap;
+    }
+    
+    .modal-content {
+        width: 90%;
+        margin: 8% auto;
+    }
+}
+
+/* Estilos para tablets grandes y laptops pequeñas */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .pokemon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+}
+
+/* Estilos para pantallas de alta resolución */
+@media (min-width: 1025px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+/* Orientación del dispositivo */
+@media (orientation: landscape) and (max-height: 500px) {
+    .modal-content {
+        margin: 2% auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .pokedex-container {
+        max-width: 100%;
+    }
+    
+    .pokemon-image-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    #pokemon-name {
+        font-size: 20px;
+    }
+    
+    #pokemon-number {
+        font-size: 16px;
+    }
+    
+    .tab-btn {
+        padding: 10px 5px;
+        font-size: 14px;
+    }
+    
+    .tab-content {
+        padding: 15px;
+        min-height: 250px;
+    }
+    
+    .moves-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .pokemon-display {
+        padding: 15px;
+    }
+    
+    .pokemon-image-container {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .pokemon-name-number {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: 1 0 50%;
+        font-size: 12px;
+    }
+    
+    .moves-container {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    
+    .evolution-chain {
+        flex-direction: column;
+    }
+    
+    .evolution-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .navigation {
+        flex-direction: column;
+    }
+}
