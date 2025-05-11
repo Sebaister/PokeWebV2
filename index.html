@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff5350">
     <title>Pokédex Moderna</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css">
@@ -11,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- PWA support -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
 </head>
 <body>
     <div class="pokedex-container">
@@ -18,7 +22,7 @@
         <div class="screen-top">
             <div class="pokemon-display">
                 <div class="pokemon-image-container">
-                    <img id="pokemon-image" src="" alt="Pokémon">
+                    <img id="pokemon-image" src="" alt="Pokémon" loading="lazy">
                     <div class="pokemon-loading">
                         <div class="spinner"></div>
                     </div>
@@ -38,10 +42,10 @@
         <!-- Pantalla inferior -->
         <div class="screen-bottom">
             <div class="tabs">
-                <button class="tab-btn active" data-tab="info">Info</button>
-                <button class="tab-btn" data-tab="stats">Stats</button>
-                <button class="tab-btn" data-tab="moves">Moves</button>
-                <button class="tab-btn" data-tab="evolution">Evolution</button>
+                <button class="tab-btn active" data-tab="info-tab">Info</button>
+                <button class="tab-btn" data-tab="stats-tab">Stats</button>
+                <button class="tab-btn" data-tab="moves-tab">Moves</button>
+                <button class="tab-btn" data-tab="evolution-tab">Evolution</button>
             </div>
             
             <div class="tab-content">
@@ -113,10 +117,21 @@
         <button class="theme-btn" data-theme="modern">Modern</button>
     </div>
 
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registrado'))
+                    .catch(err => console.log('Error al registrar Service Worker', err));
+            });
+        }
+    </script>
+    
     <script src="js/api.js"></script>
-    <!-- Scripts -->
     <script src="js/pokeapi.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/touch-gestures.js"></script>
 </body>
 </html>
