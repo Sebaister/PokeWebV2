@@ -37,3 +37,112 @@
 .dark-mode .pokemon-card {
     background-color: #1e1e1e;
 }
+
+/* Nuevas animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Efecto de carga */
+.skeleton {
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 25%, 
+        rgba(255,255,255,0.2) 50%, 
+        rgba(255,255,255,0.1) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--border-radius);
+}
+
+/* Mejora para las tarjetas */
+.pokemon-card {
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pokemon-card:hover {
+    animation: pulse 1.5s infinite, float 2s ease-in-out infinite;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* Mejora para el modo oscuro */
+.dark-mode .section {
+    background: rgba(255,255,255,0.03);
+}
+
+.dark-mode #pokedexSearch {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+/* Transición para el cambio de tema */
+body {
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Animación para el botón de volver arriba */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--pokeblue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 99;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animación para los tipos de Pokémon */
+.pokemon-type {
+    position: relative;
+    overflow: hidden;
+}
+
+.pokemon-type::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255,255,255,0.1);
+    transform: rotate(30deg);
+    transition: transform 0.3s ease;
+}
+
+.pokemon-type:hover::after {
+    transform: rotate(30deg) translate(10%, 10%);
+}

@@ -5,6 +5,26 @@ class PokeAPI {
         this.dbName = 'PokeWebDB';
         this.dbVersion = 1;
         this.initDB();
+        this.typeColors = {
+            normal: '#A8A878',
+            fire: '#F08030',
+            water: '#6890F0',
+            electric: '#F8D030',
+            grass: '#78C850',
+            ice: '#98D8D8',
+            fighting: '#C03028',
+            poison: '#A040A0',
+            ground: '#E0C068',
+            flying: '#A890F0',
+            psychic: '#F85888',
+            bug: '#A8B820',
+            rock: '#B8A038',
+            ghost: '#705898',
+            dragon: '#7038F8',
+            dark: '#705848',
+            steel: '#B8B8D0',
+            fairy: '#EE99AC'
+        };
     }
 
     async initDB() {
@@ -41,10 +61,20 @@ class PokeAPI {
             name: data.name,
             sprite: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
             types: data.types.map(t => t.type.name),
-            stats: data.stats,
-            abilities: data.abilities,
-            moves: data.moves,
+            stats: this.processStats(data.stats),
+            abilities: data.abilities.map(a => ({
+                name: a.ability.name,
+                isHidden: a.is_hidden,
+                url: a.ability.url
+            })),
+            moves: data.moves.map(m => ({
+                name: m.move.name,
+                url: m.move.url
+            })),
             species: data.species.url,
+            height: data.height / 10, // en metros
+            weight: data.weight / 10, // en kg
+            baseExperience: data.base_experience,
             evolutionChain: null
         };
 
@@ -69,8 +99,69 @@ class PokeAPI {
     }
 
     parseEvolutionChain(chain) {
-        // Implementar lógica para procesar la cadena evolutiva
-        return chain;
+        const evoChain = [];
+        let currentChain = chain;
+
+        do {
+            const evoDetails = currentChain.evolution_details[0] || {};
+            
+            evoChain.push({
+                species_name: currentChain.species.name,
+                species_url: currentChain.species.url,
+                min_level: evoDetails.min_level || null,
+                trigger: evoDetails.trigger ? evoDetails.trigger.name : null,
+                item: evoDetails.item ? evoDetails.item.name : null
+            });
+
+            // Manejar múltiples evoluciones (como Eevee)
+            if (currentChain.evolves_to.length > 1) {
+                currentChain.evolves_to.forEach(branch => {
+                    const branchDetails = branch.evolution_details[0] || {};
+                    
+                    evoChain.push({
+                        species_name: branch.species.name,
+                        species_url: branch.species.url,
+                        min_level: branchDetails.min_level || null,
+                        trigger: branchDetails.trigger ? branchDetails.trigger.name : null,
+                        item: branchDetails.item ? branchDetails.item.name : null,
+                        parent: currentChain.species.name
+                    });
+                });
+                break;
+            }
+            
+            currentChain = currentChain.evolves_to[0];
+        } while (currentChain && currentChain.evolves_to);
+
+        return evoChain;
+    }
+
+    // Método para obtener el color de un tipo
+    getTypeColor(type) {
+        return this.typeColors[type] || '#777777';
+    }
+
+    // Nuevos métodos para obtener más datos
+    async getAllTypes() {
+        const url = `${this.baseUrl}/type`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.results;
+    }
+
+    async getTypeEffectiveness(typeName) {
+        const url = `${this.baseUrl}/type/${typeName}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        return {
+            doubleDamageTo: data.damage_relations.double_damage_to.map(t => t.name),
+            halfDamageTo: data.damage_relations.half_damage_to.map(t => t.name),
+            noDamageTo: data.damage_relations.no_damage_to.map(t => t.name),
+            doubleDamageFrom: data.damage_relations.double_damage_from.map(t => t.name),
+            halfDamageFrom: data.damage_relations.half_damage_from.map(t => t.name),
+            noDamageFrom: data.damage_relations.no_damage_from.map(t => t.name)
+        };
     }
 
     async getFromIndexedDB(url) {
