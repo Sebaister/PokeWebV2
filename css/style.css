@@ -228,3 +228,150 @@ footer a {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* Estilos para el modal de detalles de Pokémon */
+.pokemon-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.pokemon-modal-content {
+    background-color: white;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #777;
+}
+
+.pokemon-detail-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.pokemon-detail-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.pokemon-detail-image {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pokemon-detail-image img {
+    max-width: 100%;
+    max-height: 300px;
+}
+
+.pokemon-detail-info {
+    flex: 2;
+    min-width: 300px;
+}
+
+.pokemon-stats {
+    margin-bottom: 20px;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stat-name {
+    width: 120px;
+    font-size: 0.9rem;
+}
+
+.stat-bar-container {
+    flex: 1;
+    height: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 0 10px;
+}
+
+.stat-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pokeblue), var(--pokepurple));
+}
+
+.stat-value {
+    width: 30px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.pokemon-abilities ul {
+    list-style: none;
+    padding-left: 10px;
+}
+
+.pokemon-abilities li {
+    margin-bottom: 5px;
+}
+
+.hidden-ability {
+    font-size: 0.8rem;
+    color: #777;
+    font-style: italic;
+}
+
+.pokemon-physical {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* Estilos para modo oscuro */
+.dark-mode .pokemon-modal-content {
+    background-color: #333;
+    color: white;
+}
+
+.dark-mode .close-modal {
+    color: #ddd;
+}
+
+.dark-mode .stat-bar-container {
+    background-color: #555;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .pokemon-detail-body {
+        flex-direction: column;
+    }
+    
+    .pokemon-detail-image {
+        margin-bottom: 20px;
+    }
+}
