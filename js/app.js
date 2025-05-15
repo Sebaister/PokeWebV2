@@ -18,24 +18,72 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Configurar búsqueda de Pokémon
+    // Configurar navegación suave
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Configurar búsqueda de Pokémon (barra principal)
     const searchBtn = document.getElementById('searchBtn');
     const pokemonSearch = document.getElementById('pokemonSearch');
     const pokemonResult = document.getElementById('pokemonResult');
     
-    searchBtn.addEventListener('click', () => {
-        searchPokemon();
-    });
+    if (searchBtn && pokemonSearch) {
+        searchBtn.addEventListener('click', () => {
+            searchPokemon(pokemonSearch.value);
+        });
+        
+        pokemonSearch.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchPokemon(pokemonSearch.value);
+            }
+        });
+    }
     
-    pokemonSearch.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            searchPokemon();
-        }
-    });
+    // Configurar búsqueda de Pokémon (barra secundaria)
+    const searchBtnInline = document.getElementById('searchBtnInline');
+    const pokemonSearchInline = document.getElementById('pokemonSearchInline');
     
-    async function searchPokemon() {
-        const query = pokemonSearch.value.trim();
+    if (searchBtnInline && pokemonSearchInline) {
+        searchBtnInline.addEventListener('click', () => {
+            searchPokemon(pokemonSearchInline.value);
+        });
+        
+        pokemonSearchInline.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchPokemon(pokemonSearchInline.value);
+            }
+        });
+    }
+    
+    async function searchPokemon(query) {
+        query = query.trim();
         if (!query) return;
+        
+        // Sincronizar ambos campos de búsqueda
+        if (pokemonSearch) pokemonSearch.value = query;
+        if (pokemonSearchInline) pokemonSearchInline.value = query;
+        
+        // Desplazarse a la sección de resultados
+        const resultsSection = document.getElementById('pokemon-search');
+        if (resultsSection) {
+            window.scrollTo({
+                top: resultsSection.offsetTop - 20,
+                behavior: 'smooth'
+            });
+        }
         
         pokemonResult.innerHTML = '<div id="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Buscando Pokémon...</p></div>';
         
@@ -44,11 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pokemon) {
                 renderPokemonCard(pokemon);
             } else {
-                pokemonResult.innerHTML = '<p>No se encontró ningún Pokémon con ese nombre o número.</p>';
+                pokemonResult.innerHTML = '<p class="error-message">No se encontró ningún Pokémon con ese nombre o número.</p>';
             }
         } catch (error) {
             console.error('Error al buscar Pokémon:', error);
-            pokemonResult.innerHTML = '<p>Error al buscar Pokémon. Por favor, intenta de nuevo.</p>';
+            pokemonResult.innerHTML = '<p class="error-message">Error al buscar Pokémon. Por favor, intenta de nuevo.</p>';
         }
     }
     
@@ -69,29 +117,49 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageUrl = pokemon.sprites.other['official-artwork'].front_default || 
                          pokemon.sprites.front_default;
         
+        // Traducir tipos
+        const translatedTypes = pokemon.types.map(type => {
+            const typeName = translateType(type.type.name);
+            return `
+                <span class="type-badge" style="background-color: ${typeChart.typeColors[type.type.name]}">
+                    ${typeName}
+                </span>
+            `;
+        }).join('');
+        
+        // Traducir estadísticas
+        const translatedStats = pokemon.stats.map(stat => {
+            return `
+                <div class="stat">
+                    <span class="stat-name">${translateStatName(stat.stat.name)}</span>
+                    <span class="stat-value">${stat.base_stat}</span>
+                </div>
+            `;
+        }).join('');
+        
+        // Obtener nombre en español si está disponible
+        let pokemonName = pokemon.name;
+        if (species && species.names) {
+            const spanishName = species.names.find(name => name.language.name === 'es');
+            if (spanishName) {
+                pokemonName = spanishName.name;
+            }
+        }
+        
         card.innerHTML = `
             <div class="pokemon-image">
-                <img src="${imageUrl}" alt="${pokemon.name}">
+                <img src="${imageUrl}" alt="${pokemonName}">
             </div>
             <div class="pokemon-info">
-                <h3 class="pokemon-name">${pokemon.name}</h3>
-                <p class="pokemon-number">#${pokemon.id.toString().padStart(3, '0')}</p>
+                <h3 class="pokemon-name">${pokemonName}</h3>
+                <p class="pokemon-number">N.º ${pokemon.id.toString().padStart(3, '0')}</p>
                 
                 <div class="pokemon-types">
-                    ${pokemon.types.map(type => `
-                        <span class="type-badge" style="background-color: ${typeChart.typeColors[type.type.name]}">
-                            ${type.type.name}
-                        </span>
-                    `).join('')}
+                    ${translatedTypes}
                 </div>
                 
                 <div class="pokemon-stats">
-                    ${pokemon.stats.map(stat => `
-                        <div class="stat">
-                            <span class="stat-name">${formatStatName(stat.stat.name)}</span>
-                            <span class="stat-value">${stat.base_stat}</span>
-                        </div>
-                    `).join('')}
+                    ${translatedStats}
                 </div>
             </div>
         `;
@@ -100,16 +168,41 @@ document.addEventListener('DOMContentLoaded', () => {
         pokemonResult.appendChild(card);
     }
     
-    function formatStatName(statName) {
+    function translateStatName(statName) {
         const statMap = {
-            'hp': 'HP',
+            'hp': 'PS',
             'attack': 'Ataque',
             'defense': 'Defensa',
-            'special-attack': 'Atq. Esp.',
+            'special-attack': 'At. Esp.',
             'special-defense': 'Def. Esp.',
             'speed': 'Velocidad'
         };
         
         return statMap[statName] || statName;
+    }
+    
+    function translateType(typeName) {
+        const typeMap = {
+            'normal': 'Normal',
+            'fire': 'Fuego',
+            'water': 'Agua',
+            'electric': 'Eléctrico',
+            'grass': 'Planta',
+            'ice': 'Hielo',
+            'fighting': 'Lucha',
+            'poison': 'Veneno',
+            'ground': 'Tierra',
+            'flying': 'Volador',
+            'psychic': 'Psíquico',
+            'bug': 'Bicho',
+            'rock': 'Roca',
+            'ghost': 'Fantasma',
+            'dragon': 'Dragón',
+            'dark': 'Siniestro',
+            'steel': 'Acero',
+            'fairy': 'Hada'
+        };
+        
+        return typeMap[typeName] || typeName;
     }
 });

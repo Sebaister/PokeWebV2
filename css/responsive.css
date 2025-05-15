@@ -1,14 +1,58 @@
-/* Estilos para tablets */
-@media (max-width: 768px) {
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+    .wiki-layout {
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+    }
+    
     header h1 {
         font-size: 2rem;
     }
     
+    .hero-section {
+        padding: 40px 0;
+    }
+    
+    .search-hero h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Tablets pequeñas */
+@media (max-width: 768px) {
+    .wiki-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        order: 2;
+    }
+    
+    .main-content {
+        order: 1;
+    }
+    
+    .sidebar-section {
+        margin-bottom: 15px;
+    }
+    
     .generation-selector {
+        flex-direction: row;
         flex-wrap: wrap;
+        gap: 10px;
     }
     
     .gen-btn {
+        flex: 1;
+        min-width: 100px;
+        text-align: center;
+    }
+    
+    .main-nav ul {
+        gap: 10px;
+    }
+    
+    .main-nav a {
         padding: 6px 12px;
         font-size: 0.9rem;
     }
@@ -18,21 +62,41 @@
         height: 35px;
         font-size: 0.9rem;
     }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* Estilos para móviles */
-@media (max-width: 480px) {
+/* Móviles */
+@media (max-width: 576px) {
     header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .tagline {
+        font-size: 1rem;
+    }
+    
+    .hero-section {
+        padding: 30px 0;
+    }
+    
+    .search-hero h2 {
+        font-size: 1.5rem;
+    }
+    
+    .wiki-section {
+        padding: 15px;
+    }
+    
+    .wiki-section h2 {
         font-size: 1.5rem;
     }
     
     .gen-btn {
-        padding: 5px 10px;
+        padding: 6px 10px;
         font-size: 0.8rem;
-    }
-    
-    section h2 {
-        font-size: 1.5rem;
     }
     
     .type-cell {
@@ -41,7 +105,7 @@
         font-size: 0.8rem;
     }
     
-    #pokemonSearch {
+    #pokemonSearch, #pokemonSearchInline {
         padding: 10px;
     }
     
@@ -55,5 +119,24 @@
     
     .pokemon-stats {
         grid-template-columns: 1fr;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 400px) {
+    .main-nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .main-nav a {
+        display: block;
+        width: 100%;
+        text-align: center;
     }
 }
