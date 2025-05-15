@@ -20,8 +20,10 @@
             <nav class="main-nav">
                 <ul>
                     <li><a href="#" class="active">Inicio</a></li>
-                    <li><a href="#type-chart">Tabla de Tipos</a></li>
-                    <li><a href="#pokemon-search">Pokédex</a></li>
+                    <li><a href="#pokedex">Pokédex</a></li>
+                    <li><a href="#type-chart">Tipos</a></li>
+                    <li><a href="#abilities">Habilidades</a></li>
+                    <li><a href="#moves">Movimientos</a></li>
                     <li><a href="#about">Acerca de</a></li>
                 </ul>
             </nav>
@@ -47,8 +49,10 @@
                     <div class="sidebar-section">
                         <h3>Navegación</h3>
                         <ul>
+                            <li><a href="#pokedex">Pokédex</a></li>
                             <li><a href="#type-chart">Tabla de Tipos</a></li>
-                            <li><a href="#pokemon-search">Buscar Pokémon</a></li>
+                            <li><a href="#abilities">Habilidades</a></li>
+                            <li><a href="#moves">Movimientos</a></li>
                             <li><a href="#about">Acerca de</a></li>
                         </ul>
                     </div>
@@ -86,6 +90,46 @@
                             <button id="searchBtnInline"><i class="fas fa-search"></i></button>
                         </div>
                         <div id="pokemonResult" class="pokemon-card-container"></div>
+                    </section>
+                    
+                    <section id="abilities" class="wiki-section">
+                        <h2>Habilidades Pokémon</h2>
+                        <p class="section-description">Explora las diferentes habilidades que pueden tener los Pokémon.</p>
+                        <div class="search-container">
+                            <input type="text" id="abilitySearch" placeholder="Buscar habilidad...">
+                            <button id="abilitySearchBtn"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div id="abilitiesList" class="abilities-container">
+                            <div id="loading-abilities" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Cargando habilidades...</p>
+                            </div>
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="prevAbilities" disabled>Anterior</button>
+                            <span id="abilitiesPage">Página 1</span>
+                            <button id="nextAbilities">Siguiente</button>
+                        </div>
+                    </section>
+                    
+                    <section id="moves" class="wiki-section">
+                        <h2>Movimientos Pokémon</h2>
+                        <p class="section-description">Descubre los diferentes movimientos que pueden aprender los Pokémon.</p>
+                        <div class="search-container">
+                            <input type="text" id="moveSearch" placeholder="Buscar movimiento...">
+                            <button id="moveSearchBtn"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div id="movesList" class="moves-container">
+                            <div id="loading-moves" class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Cargando movimientos...</p>
+                            </div>
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="prevMoves" disabled>Anterior</button>
+                            <span id="movesPage">Página 1</span>
+                            <button id="nextMoves">Siguiente</button>
+                        </div>
                     </section>
                     
                     <section id="about" class="wiki-section">

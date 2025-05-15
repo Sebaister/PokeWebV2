@@ -64,6 +64,67 @@ class PokeAPI {
     async getPokemonSpecies(id) {
         return await this.fetchData(`/pokemon-species/${id}`);
     }
+
+    /**
+     * Obtiene información detallada de una habilidad
+     */
+    async getAbility(nameOrId) {
+        try {
+            const query = nameOrId.toString().toLowerCase();
+            return await this.fetchData(`/ability/${query}`);
+        } catch (error) {
+            console.error(`Habilidad no encontrada: ${nameOrId}`);
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene información detallada de un movimiento
+     */
+    async getMove(nameOrId) {
+        try {
+            const query = nameOrId.toString().toLowerCase();
+            return await this.fetchData(`/move/${query}`);
+        } catch (error) {
+            console.error(`Movimiento no encontrado: ${nameOrId}`);
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene una lista de habilidades con paginación
+     */
+    async getAbilities(limit = 20, offset = 0) {
+        return await this.fetchData(`/ability?limit=${limit}&offset=${offset}`);
+    }
+
+    /**
+     * Obtiene una lista de movimientos con paginación
+     */
+    async getMoves(limit = 20, offset = 0) {
+        return await this.fetchData(`/move?limit=${limit}&offset=${offset}`);
+    }
+
+    /**
+     * Obtiene información de la cadena evolutiva de un Pokémon
+     */
+    async getEvolutionChain(id) {
+        return await this.fetchData(`/evolution-chain/${id}`);
+    }
+
+    /**
+     * Obtiene el ID de la cadena evolutiva desde la especie
+     */
+    async getEvolutionChainFromSpecies(speciesId) {
+        const species = await this.getPokemonSpecies(speciesId);
+        if (species && species.evolution_chain) {
+            // Extraer el ID de la URL
+            const urlParts = species.evolution_chain.url.split('/');
+            const evolutionId = urlParts[urlParts.length - 2];
+            return await this.getEvolutionChain(evolutionId);
+        }
+        return null;
+    }
 }
 
 // Exportar la instancia para uso global
