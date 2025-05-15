@@ -197,44 +197,43 @@ class PokeAPI {
             effort: stat.effort
         }));
     }
+    
+    async searchPokemon(term) {
+        try {
+            // Primero intentamos buscar por ID si el término es un número
+            if (!isNaN(term)) {
+                try {
+                    const pokemon = await this.getPokemon(term);
+                    return [pokemon];
+                } catch (error) {
+                    // Si no se encuentra, continuamos con la búsqueda por nombre
+                }
+            }
+            
+            // Buscamos en la lista de Pokémon
+            const response = await fetch(`${this.baseUrl}/pokemon?limit=1000`);
+            const data = await response.json();
+            
+            // Filtramos los resultados que coincidan con el término de búsqueda
+            const matches = data.results.filter(pokemon => 
+                pokemon.name.includes(term)
+            );
+            
+            // Limitamos a 5 resultados para no sobrecargar
+            const limitedMatches = matches.slice(0, 5);
+            
+            // Obtenemos los detalles de cada Pokémon encontrado
+            const pokemonDetails = await Promise.all(
+                limitedMatches.map(match => this.getPokemon(match.name))
+            );
+            
+            return pokemonDetails;
+        } catch (error) {
+            console.error('Error en searchPokemon:', error);
+            return [];
+        }
+    }
 }
 
 // Exportar la instancia para uso global
 window.pokeAPI = new PokeAPI();
-
-
-async searchPokemon(term) {
-    try {
-        // Primero intentamos buscar por ID si el término es un número
-        if (!isNaN(term)) {
-            try {
-                const pokemon = await this.getPokemon(term);
-                return [pokemon];
-            } catch (error) {
-                // Si no se encuentra, continuamos con la búsqueda por nombre
-            }
-        }
-        
-        // Buscamos en la lista de Pokémon
-        const response = await fetch(`${this.baseUrl}/pokemon?limit=1000`);
-        const data = await response.json();
-        
-        // Filtramos los resultados que coincidan con el término de búsqueda
-        const matches = data.results.filter(pokemon => 
-            pokemon.name.includes(term)
-        );
-        
-        // Limitamos a 5 resultados para no sobrecargar
-        const limitedMatches = matches.slice(0, 5);
-        
-        // Obtenemos los detalles de cada Pokémon encontrado
-        const pokemonDetails = await Promise.all(
-            limitedMatches.map(match => this.getPokemon(match.name))
-        );
-        
-        return pokemonDetails;
-    } catch (error) {
-        console.error('Error en searchPokemon:', error);
-        return [];
-    }
-}
