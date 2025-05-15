@@ -1,0 +1,45 @@
+:root {
+    --pokered: #FF0000;
+    --pokeblue: #3D7DCA;
+    --pokeyellow: #FFCB05;
+    --pokegray: #DFDFDF;
+}
+
+.pokebg-gradient {
+    background: linear-gradient(135deg, var(--pokered) 0%, var(--pokeblue) 100%);
+}
+
+.pokedex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.pokemon-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Mobile menu styles */
+@media (max-width: 768px) {
+    .main-nav {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 80%;
+        height: calc(100vh - 80px);
+        background: var(--pokeblue);
+        transition: left 0.3s;
+    }
+    
+    .main-nav.active {
+        left: 0;
+    }
+}
