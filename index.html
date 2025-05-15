@@ -5,61 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#3D7DCA">
     <link rel="manifest" href="manifest.json">
-    <title>PokéWeb+ | La mejor wiki Pokémon</title>
-    <meta name="description" content="Wiki Pokémon completa con Pokédex, tipos, habilidades, movimientos y estrategias competitivas">
+    <title>PokéWeb Pro | La enciclopedia Pokémon definitiva</title>
+    <meta name="description" content="La wiki Pokémon más completa con datos actualizados, estrategias competitivas y herramientas para entrenadores">
     <link rel="preconnect" href="https://pokeapi.co">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'">
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/poketheme.css">
+    <link rel="stylesheet" href="css/animations.css">
 </head>
-<body>
+<body class="dark-mode">
     <header class="pokebg-gradient">
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-pokeball"></i>
-                    <h1>PokéWeb+</h1>
+                    <i class="fas fa-pokeball spin"></i>
+                    <h1>PokéWeb Pro</h1>
                 </div>
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <nav class="main-nav" id="mainNav">
-                    <ul>
-                        <li><a href="#pokedex" class="nav-link active"><i class="fas fa-book"></i> Pokédex</a></li>
-                        <li><a href="#types" class="nav-link"><i class="fas fa-shield-alt"></i> Tipos</a></li>
-                        <li><a href="#abilities" class="nav-link"><i class="fas fa-star"></i> Habilidades</a></li>
-                        <li><a href="#moves" class="nav-link"><i class="fas fa-bolt"></i> Movimientos</a></li>
-                        <li><a href="#teams" class="nav-link"><i class="fas fa-users"></i> Equipos</a></li>
-                    </ul>
-                </nav>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="container">
         <section id="pokedex" class="active-section">
-            <div class="pokedex-header">
-                <h2><i class="fas fa-book"></i> Pokédex Nacional</h2>
-                <div class="search-box">
-                    <input type="text" id="pokedexSearch" placeholder="Buscar Pokémon..." autocomplete="off">
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
-                    <button id="randomBtn" class="btn-random"><i class="fas fa-random"></i></button>
-                </div>
-                <div class="filter-options">
-                    <select id="typeFilter">
-                        <option value="">Todos los tipos</option>
-                        <!-- Types will be populated by JS -->
-                    </select>
-                    <select id="genFilter">
-                        <option value="">Todas las generaciones</option>
-                        <!-- Generations will be populated by JS -->
-                    </select>
+            <div class="pokedex-toolbar">
+                <div class="search-container">
+                    <input type="search" id="pokedexSearch" placeholder="Buscar Pokémon..." autocomplete="off">
+                    <button id="advancedSearchBtn" aria-label="Búsqueda avanzada">
+                        <i class="fas fa-sliders-h"></i>
+                    </button>
                 </div>
             </div>
             <div id="pokedexResults" class="pokedex-grid"></div>
         </section>
+</main>
 
         <section id="tipos" class="section">
             <h2>Tabla de Tipos</h2>
@@ -123,7 +111,7 @@
     <button id="backToTop" class="back-to-top"><i class="fas fa-arrow-up"></i></button>
 
     <script src="js/api.js"></script>
-    <script src="js/app.js"></script>
+    <script type="module" src="js/app.js"></script>
     <script src="js/pokeapi-v2.js"></script>
     <script src="js/app-enhanced.js"></script>
 </body>

@@ -1,0 +1,33 @@
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 2s linear infinite;
+}
+
+.pokemon-card {
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.pokemon-card:hover {
+    animation: float 2s ease-in-out infinite;
+    transform-style: preserve-3d;
+}
+
+/* Dark mode styles */
+.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-mode .pokemon-card {
+    background-color: #1e1e1e;
+}

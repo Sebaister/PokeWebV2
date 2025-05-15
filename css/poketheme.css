@@ -3,6 +3,8 @@
     --pokeblue: #3D7DCA;
     --pokeyellow: #FFCB05;
     --pokegray: #DFDFDF;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
 }
 
 .pokebg-gradient {
@@ -11,8 +13,9 @@
 
 .pokedex-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
 }
 
 .pokemon-card {
