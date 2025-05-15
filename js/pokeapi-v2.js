@@ -1,7 +1,7 @@
 class PokeAPI {
     constructor() {
         this.baseUrl = 'https://pokeapi.co/api/v2';
-        this.cache = new Map(); // Añadir esta línea
+        this.cache = new Map();
         this.dbName = 'PokeWebDB';
         this.dbVersion = 1;
         this.initDB();
@@ -41,7 +41,6 @@ class PokeAPI {
             request.onsuccess = () => resolve();
         });
     }
-}
 
     async getPokemon(idOrName) {
         const url = `${this.baseUrl}/pokemon/${idOrName}`;
@@ -199,3 +198,6 @@ class PokeAPI {
         }));
     }
 }
+
+// Exportar la instancia para uso global
+window.pokeAPI = new PokeAPI();
