@@ -59,6 +59,15 @@ class PokeAPI {
     }
 
     /**
+     * Obtiene un Pokémon aleatorio
+     */
+    async getRandomPokemon() {
+        // Hay aproximadamente 898 Pokémon en la API
+        const randomId = Math.floor(Math.random() * 898) + 1;
+        return await this.getPokemon(randomId);
+    }
+
+    /**
      * Obtiene información de la especie de un Pokémon
      */
     async getPokemonSpecies(id) {

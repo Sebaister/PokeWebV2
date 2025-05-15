@@ -140,3 +140,28 @@
         text-align: center;
     }
 }
+
+@media (max-width: 576px) {
+    .search-box {
+        flex-direction: column;
+    }
+    
+    .search-box input {
+        border-radius: 25px;
+        margin-bottom: 10px;
+    }
+    
+    .search-box button {
+        border-radius: 25px;
+        padding: 10px;
+    }
+    
+    .pokemon-card {
+        margin: 10px;
+    }
+    
+    .type-chart-container {
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+}

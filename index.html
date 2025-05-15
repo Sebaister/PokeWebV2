@@ -2,148 +2,111 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PokéWiki - Tu Enciclopedia Pokémon</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/responsive.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#3D7DCA">
+    <link rel="manifest" href="manifest.json">
+    <title>PokéWeb - Información Pokémon</title>
+    <meta name="description" content="Explora el mundo Pokémon con información detallada sobre Pokémon, tipos, habilidades y movimientos.">
+    <link rel="preconnect" href="https://pokeapi.co">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="css/style.css" media="print" onload="this.media='all'">
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container">
-            <div class="header-content">
-                <h1>PokéWiki</h1>
-                <button class="menu-toggle" aria-label="Abrir menú"><i class="fas fa-bars"></i></button>
-            </div>
-            <nav class="main-nav">
+            <h1><i class="fas fa-pokeball"></i> PokéWeb</h1>
+            <p class="tagline">Tu guía simple del mundo Pokémon</p>
+            <nav>
                 <ul>
-                    <li><a href="#pokedex" class="active">Pokédex</a></li>
-                    <li><a href="#type-chart">Tipos</a></li>
-                    <li><a href="#abilities">Habilidades</a></li>
-                    <li><a href="#moves">Movimientos</a></li>
-                    <li><a href="#about">Acerca de</a></li>
+                    <li><a href="#busqueda" class="active">Buscar</a></li>
+                    <li><a href="#tipos">Tipos</a></li>
+                    <li><a href="#habilidades">Habilidades</a></li>
+                    <li><a href="#movimientos">Movimientos</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section class="hero-section">
+    <section id="busqueda" class="hero">
         <div class="container">
-            <h2>Explora el mundo Pokémon</h2>
-            <div class="search-container">
-                <input type="text" id="pokemonSearch" placeholder="Buscar Pokémon por nombre o número...">
-                <button id="searchBtn" aria-label="Buscar Pokémon"><i class="fas fa-search"></i></button>
+            <h2>Encuentra tu Pokémon</h2>
+            <div class="search-box">
+                <input type="text" id="pokemonSearch" placeholder="Nombre o número de Pokémon...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
             </div>
+            <button id="randomBtn" class="btn-random">Pokémon Aleatorio</button>
         </div>
     </section>
 
-    <main>
-        <div class="container">
-            <section id="pokedex" class="wiki-section">
-                <h2>Pokédex</h2>
-                <p class="section-description">Busca información detallada sobre cualquier Pokémon.</p>
-                <div class="search-container">
-                    <input type="text" id="pokemonSearchInline" placeholder="Nombre o número de Pokémon">
-                    <button id="searchBtnInline" aria-label="Buscar Pokémon"><i class="fas fa-search"></i></button>
-                </div>
-                <div id="pokemonResult" class="pokemon-card-container"></div>
-            </section>
+    <main class="container">
+        <section id="resultado">
+            <div id="pokemonResult"></div>
+        </section>
 
-            <section id="type-chart" class="wiki-section">
-                <h2>Tabla de Tipos</h2>
-                <p class="section-description">Consulta la efectividad entre tipos de Pokémon.</p>
-                <div class="generation-selector">
-                    <button class="gen-btn active" data-gen="8">Gen 8+</button>
-                    <button class="gen-btn" data-gen="6">Gen 6-7</button>
-                    <button class="gen-btn" data-gen="5">Gen 5</button>
-                    <button class="gen-btn" data-gen="2">Gen 2-4</button>
-                    <button class="gen-btn" data-gen="1">Gen 1</button>
+        <section id="tipos" class="section">
+            <h2>Tabla de Tipos</h2>
+            <p>Efectividad entre tipos de Pokémon</p>
+            <div id="typeChart" class="type-chart-container">
+                <div id="loadingTypes" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando tabla de tipos...</p>
                 </div>
-                <div class="chart-container">
-                    <div id="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando datos...</p>
-                    </div>
-                    <div class="type-chart" id="typeChart"></div>
-                </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="abilities" class="wiki-section">
-                <h2>Habilidades</h2>
-                <div class="search-container">
-                    <input type="text" id="abilitySearch" placeholder="Buscar habilidad...">
-                    <button id="abilitySearchBtn" aria-label="Buscar habilidad"><i class="fas fa-search"></i></button>
+        <section id="habilidades" class="section">
+            <h2>Habilidades</h2>
+            <p>Explora las habilidades de los Pokémon</p>
+            <div class="search-mini">
+                <input type="text" id="abilitySearch" placeholder="Buscar habilidad...">
+                <button id="abilitySearchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div id="abilitiesList">
+                <div id="loadingAbilities" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando habilidades...</p>
                 </div>
-                <div id="abilitiesList" class="abilities-container">
-                    <div id="loading-abilities" class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando habilidades...</p>
-                    </div>
-                </div>
-                <div class="pagination-controls">
-                    <button id="prevAbilities" disabled>Anterior</button>
-                    <span id="abilitiesPage">Página 1</span>
-                    <button id="nextAbilities">Siguiente</button>
-                </div>
-            </section>
+            </div>
+            <div class="pagination">
+                <button id="prevAbilities" disabled><i class="fas fa-chevron-left"></i></button>
+                <span id="abilitiesPage">Página 1</span>
+                <button id="nextAbilities"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
 
-            <section id="moves" class="wiki-section">
-                <h2>Movimientos</h2>
-                <div class="search-container">
-                    <input type="text" id="moveSearch" placeholder="Buscar movimiento...">
-                    <button id="moveSearchBtn" aria-label="Buscar movimiento"><i class="fas fa-search"></i></button>
+        <section id="movimientos" class="section">
+            <h2>Movimientos</h2>
+            <p>Descubre los movimientos de los Pokémon</p>
+            <div class="search-mini">
+                <input type="text" id="moveSearch" placeholder="Buscar movimiento...">
+                <button id="moveSearchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            <div id="movesList">
+                <div id="loadingMoves" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando movimientos...</p>
                 </div>
-                <div id="movesList" class="moves-container">
-                    <div id="loading-moves" class="loading-spinner">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando movimientos...</p>
-                    </div>
-                </div>
-                <div class="pagination-controls">
-                    <button id="prevMoves" disabled>Anterior</button>
-                    <span id="movesPage">Página 1</span>
-                    <button id="nextMoves">Siguiente</button>
-                </div>
-            </section>
-
-            <section id="about" class="wiki-section">
-                <h2>Acerca de PokéWiki</h2>
-                <p>PokéWiki es una enciclopedia completa sobre el mundo Pokémon, diseñada para proporcionar información detallada y fácil de entender sobre tipos, Pokémon y más.</p>
-                <p>Todos los datos son obtenidos de <a href="https://pokeapi.co/" target="_blank">PokeAPI</a>.</p>
-            </section>
-        </div>
+            </div>
+            <div class="pagination">
+                <button id="prevMoves" disabled><i class="fas fa-chevron-left"></i></button>
+                <span id="movesPage">Página 1</span>
+                <button id="nextMoves"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
     </main>
 
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div>
-                    <h3>PokéWiki</h3>
-                    <p>Tu enciclopedia Pokémon</p>
-                </div>
-                <div>
-                    <h3>Enlaces</h3>
-                    <ul>
-                        <li><a href="#type-chart">Tipos</a></li>
-                        <li><a href="#pokedex">Pokédex</a></li>
-                        <li><a href="#about">Acerca de</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3>Créditos</h3>
-                    <p>Desarrollado por Seba</p>
-                    <p>Datos de <a href="https://pokeapi.co/" target="_blank">PokeAPI</a></p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>Versión 2.0 - 2023</p>
-            </div>
+            <p>&copy; 2023 PokéWeb - Desarrollado por Seba</p>
+            <p>Datos obtenidos de <a href="https://pokeapi.co/" target="_blank">PokeAPI</a></p>
         </div>
     </footer>
 
+    <button id="backToTop" class="back-to-top"><i class="fas fa-arrow-up"></i></button>
+
     <script src="js/api.js"></script>
-    <script src="js/typeChart.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
