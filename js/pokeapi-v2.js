@@ -99,4 +99,12 @@ class PokeAPI {
             };
         });
     }
+
+    processStats(stats) {
+        return stats.map(stat => ({
+            name: stat.stat.name,
+            value: stat.base_stat,
+            effort: stat.effort
+        }));
+    }
 }
