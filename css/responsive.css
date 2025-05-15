@@ -1,0 +1,59 @@
+/* Estilos para tablets */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .generation-selector {
+        flex-wrap: wrap;
+    }
+    
+    .gen-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .type-cell {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos para móviles */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .gen-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    
+    section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .type-cell {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+    
+    #pokemonSearch {
+        padding: 10px;
+    }
+    
+    .pokemon-card {
+        max-width: 100%;
+    }
+    
+    .pokemon-name {
+        font-size: 1.3rem;
+    }
+    
+    .pokemon-stats {
+        grid-template-columns: 1fr;
+    }
+}

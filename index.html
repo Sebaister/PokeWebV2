@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Tipos Pokémon</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Tabla de Tipos Pokémon</h1>
+            <div class="generation-selector">
+                <button class="gen-btn active" data-gen="8">Gen 8+</button>
+                <button class="gen-btn" data-gen="6">Gen 6-7</button>
+                <button class="gen-btn" data-gen="5">Gen 5</button>
+                <button class="gen-btn" data-gen="2">Gen 2-4</button>
+                <button class="gen-btn" data-gen="1">Gen 1</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="type-chart-section">
+                <h2>Tabla de Efectividad</h2>
+                <div class="chart-container">
+                    <div id="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando datos...</p>
+                    </div>
+                    <div class="type-chart" id="typeChart"></div>
+                </div>
+            </section>
+
+            <section class="pokemon-search">
+                <h2>Buscar Pokémon</h2>
+                <div class="search-container">
+                    <input type="text" id="pokemonSearch" placeholder="Nombre o número de Pokémon">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <div id="pokemonResult" class="pokemon-card-container"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Desarrollado por Seba | Datos obtenidos de <a href="https://pokeapi.co/" target="_blank">PokeAPI</a></p>
+            <p>Versión 2.0 - 2023</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/typeChart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
