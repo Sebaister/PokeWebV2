@@ -1,51 +1,71 @@
-import { Pokemon, PokemonSpecies, EvolutionChain, ProcessedPokemon, ProcessedEvolution, PokemonListResponse } from '../types/pokemon';
+import { ProcessedPokemon, ProcessedEvolution } from '../types/pokemon';
 
-const BASE_URL = 'https://pokeapi.co/api/v2';
+// Función para obtener la lista de Pokémon
+export async function getPokemonList(limit = 20, offset = 0) {
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
+  return await response.json();
+}
 
-// Función para procesar un Pokémon y obtener todos sus datos
+// Función para obtener detalles completos de un Pokémon
 export async function getPokemonDetails(idOrName: string | number): Promise<ProcessedPokemon> {
   try {
     // Obtener datos básicos del Pokémon
-    const pokemonResponse = await fetch(`${BASE_URL}/pokemon/${idOrName}`);
-    const pokemon: Pokemon = await pokemonResponse.json();
+    const pokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${idOrName}`);
+    const pokemon = await pokemonResponse.json();
     
-    // Obtener datos de la especie
+    // Obtener datos de la especie para descripción, hábitat, etc.
     const speciesResponse = await fetch(pokemon.species.url);
-    const species: PokemonSpecies = await speciesResponse.json();
+    const species = await speciesResponse.json();
     
     // Obtener descripción en español
     const description = species.flavor_text_entries
-      .find(entry => entry.language.name === 'es')?.flavor_text
-      .replace(/\f/g, ' ') || 
-      species.flavor_text_entries
-      .find(entry => entry.language.name === 'en')?.flavor_text
-      .replace(/\f/g, ' ') || '';
+      .find((entry: any) => entry.language.name === 'es')?.flavor_text
+      || species.flavor_text_entries
+      .find((entry: any) => entry.language.name === 'en')?.flavor_text
+      || '';
     
     // Obtener cadena evolutiva
-    const evolutionChain = await getEvolutionChain(species.evolution_chain.url);
+    const evolutionResponse = await fetch(species.evolution_chain.url);
+    const evolutionData = await evolutionResponse.json();
     
+    // Procesar cadena evolutiva
+    const evolutionChain = await processEvolutionChain(evolutionData.chain);
+    
+    // Construir objeto Pokémon procesado
     return {
       id: pokemon.id,
       name: pokemon.name,
       image: pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default,
-      types: pokemon.types.map(type => type.type.name),
-      stats: pokemon.stats.map(stat => ({
+      types: pokemon.types.map((type: any) => type.type.name),
+      stats: pokemon.stats.map((stat: any) => ({
         name: stat.stat.name,
         value: stat.base_stat
       })),
-      abilities: pokemon.abilities.map(ability => ({
+      abilities: pokemon.abilities.map((ability: any) => ({
         name: ability.ability.name,
-        isHidden: ability.is_hidden
+        isHidden: ability.is_hidden,
+        description: '' // Se llenará con una función adicional si es necesario
       })),
       height: pokemon.height / 10, // Convertir a metros
       weight: pokemon.weight / 10, // Convertir a kilogramos
-      description,
+      description: description.replace(/\f/g, ' '),
       evolutionChain,
       generation: species.generation.name,
-      habitat: species.habitat?.name,
+      habitat: species.habitat?.name || '',
       isLegendary: species.is_legendary,
       isMythical: species.is_mythical,
-      color: species.color.name
+      color: species.color.name,
+      baseExperience: pokemon.base_experience,
+      moves: pokemon.moves.slice(0, 20).map((move: any) => ({
+        name: move.move.name,
+        url: move.move.url
+      })),
+      // Añadir más información según necesites
+      eggGroups: species.egg_groups.map((group: any) => group.name),
+      genderRate: species.gender_rate,
+      captureRate: species.capture_rate,
+      baseHappiness: species.base_happiness,
+      growthRate: species.growth_rate.name
     };
   } catch (error) {
     console.error('Error obteniendo detalles del Pokémon:', error);
@@ -53,117 +73,135 @@ export async function getPokemonDetails(idOrName: string | number): Promise<Proc
   }
 }
 
-// Función para obtener la cadena evolutiva
-async function getEvolutionChain(url: string): Promise<ProcessedEvolution[]> {
-  try {
-    const response = await fetch(url);
-    const data: EvolutionChain = await response.json();
-    
-    return processEvolutionChain(data.chain);
-  } catch (error) {
-    console.error('Error obteniendo cadena evolutiva:', error);
-    return [];
-  }
-}
-
 // Función para procesar la cadena evolutiva
-function processEvolutionChain(chain: EvolutionNode): ProcessedEvolution[] {
+async function processEvolutionChain(chain: any): Promise<ProcessedEvolution[]> {
   const evolutions: ProcessedEvolution[] = [];
   
-  // Función recursiva para procesar cada nodo de evolución
-  function processNode(node: EvolutionNode, evolutions: ProcessedEvolution[]) {
-    // Extraer el ID del Pokémon de la URL
-    const id = parseInt(node.species.url.split('/').filter(Boolean).pop() || '0');
-    
-    evolutions.push({
-      name: node.species.name,
-      id,
-      minLevel: node.evolution_details[0]?.min_level || null,
-      trigger: node.evolution_details[0]?.trigger?.name || null,
-      item: node.evolution_details[0]?.item?.name || null
-    });
-    
-    // Procesar evoluciones siguientes
-    node.evolves_to.forEach(evolution => {
-      processNode(evolution, evolutions);
-    });
+  // Procesar el Pokémon base
+  const basePokemon = await getBasicPokemonInfo(chain.species.name);
+  evolutions.push(basePokemon);
+  
+  // Procesar evoluciones recursivamente
+  if (chain.evolves_to && chain.evolves_to.length > 0) {
+    await processEvolutionLevel(chain.evolves_to, evolutions);
   }
   
-  processNode(chain, evolutions);
-  
-  // Obtener imágenes para cada evolución
   return evolutions;
 }
 
-// Función para obtener una lista de Pokémon con paginación
-export async function getPokemonList(limit = 20, offset = 0): Promise<PokemonListResponse> {
-  try {
-    const response = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
-    return await response.json();
-  } catch (error) {
-    console.error('Error obteniendo lista de Pokémon:', error);
-    throw error;
-  }
-}
-
-// Función para buscar Pokémon por nombre
-export async function searchPokemon(query: string): Promise<ProcessedPokemon[]> {
-  try {
-    // Si es un número, intentar buscar por ID
-    if (!isNaN(Number(query))) {
-      const pokemon = await getPokemonDetails(query);
-      return [pokemon];
+// Función auxiliar para procesar niveles de evolución
+async function processEvolutionLevel(evolvesTo: any[], evolutions: ProcessedEvolution[]) {
+  for (const evolution of evolvesTo) {
+    const evolutionDetails = evolution.evolution_details[0];
+    
+    const pokemonInfo = await getBasicPokemonInfo(evolution.species.name);
+    
+    // Añadir detalles de evolución
+    pokemonInfo.minLevel = evolutionDetails.min_level || null;
+    pokemonInfo.trigger = evolutionDetails.trigger?.name || null;
+    pokemonInfo.item = evolutionDetails.item?.name || null;
+    
+    evolutions.push(pokemonInfo);
+    
+    // Procesar siguiente nivel de evolución si existe
+    if (evolution.evolves_to && evolution.evolves_to.length > 0) {
+      await processEvolutionLevel(evolution.evolves_to, evolutions);
     }
-    
-    // Buscar por nombre
-    const response = await fetch(`${BASE_URL}/pokemon?limit=1000`);
-    const data: PokemonListResponse = await response.json();
-    
-    // Filtrar resultados que coincidan con la búsqueda
-    const matches = data.results
-      .filter(pokemon => pokemon.name.includes(query.toLowerCase()))
-      .slice(0, 5); // Limitar a 5 resultados
-    
-    // Obtener detalles de cada Pokémon encontrado
-    const pokemonDetails = await Promise.all(
-      matches.map(match => getPokemonDetails(match.name))
-    );
-    
-    return pokemonDetails;
-  } catch (error) {
-    console.error('Error en la búsqueda:', error);
-    return [];
   }
 }
 
-// Función para obtener todos los tipos de Pokémon
-export async function getPokemonTypes() {
+// Función para obtener información básica de un Pokémon
+async function getBasicPokemonInfo(name: string): Promise<ProcessedEvolution> {
   try {
-    const response = await fetch(`${BASE_URL}/type`);
-    const data = await response.json();
-    return data.results;
-  } catch (error) {
-    console.error('Error obteniendo tipos:', error);
-    throw error;
-  }
-}
-
-// Función para obtener efectividad de tipos
-export async function getTypeEffectiveness(typeName: string) {
-  try {
-    const response = await fetch(`${BASE_URL}/type/${typeName}`);
-    const data = await response.json();
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+    const pokemon = await response.json();
     
     return {
-      doubleDamageTo: data.damage_relations.double_damage_to.map((t: any) => t.name),
-      halfDamageTo: data.damage_relations.half_damage_to.map((t: any) => t.name),
-      noDamageTo: data.damage_relations.no_damage_to.map((t: any) => t.name),
-      doubleDamageFrom: data.damage_relations.double_damage_from.map((t: any) => t.name),
-      halfDamageFrom: data.damage_relations.half_damage_from.map((t: any) => t.name),
-      noDamageFrom: data.damage_relations.no_damage_from.map((t: any) => t.name)
+      id: pokemon.id,
+      name: pokemon.name,
+      image: pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default,
+      types: pokemon.types.map((type: any) => type.type.name),
+      minLevel: null,
+      trigger: null,
+      item: null
     };
   } catch (error) {
-    console.error('Error obteniendo efectividad de tipos:', error);
+    console.error(`Error obteniendo información básica de ${name}:`, error);
     throw error;
   }
+}
+
+// Función para obtener información de tipos
+export async function getTypesList() {
+  const response = await fetch('https://pokeapi.co/api/v2/type');
+  const data = await response.json();
+  return data.results;
+}
+
+// Función para obtener detalles de un tipo
+export async function getTypeDetails(name: string) {
+  const response = await fetch(`https://pokeapi.co/api/v2/type/${name}`);
+  return await response.json();
+}
+
+// Función para obtener lista de habilidades
+export async function getAbilitiesList(limit = 20, offset = 0) {
+  const response = await fetch(`https://pokeapi.co/api/v2/ability?limit=${limit}&offset=${offset}`);
+  return await response.json();
+}
+
+// Función para obtener detalles de una habilidad
+export async function getAbilityDetails(name: string) {
+  const response = await fetch(`https://pokeapi.co/api/v2/ability/${name}`);
+  const data = await response.json();
+  
+  // Obtener descripción en español
+  const description = data.flavor_text_entries
+    .find((entry: any) => entry.language.name === 'es')?.flavor_text
+    || data.flavor_text_entries
+    .find((entry: any) => entry.language.name === 'en')?.flavor_text
+    || '';
+  
+  return {
+    id: data.id,
+    name: data.name,
+    description: description.replace(/\f/g, ' '),
+    pokemon: data.pokemon.map((p: any) => ({
+      name: p.pokemon.name,
+      url: p.pokemon.url,
+      isHidden: p.is_hidden
+    }))
+  };
+}
+
+// Función para obtener lista de movimientos
+export async function getMovesList(limit = 20, offset = 0) {
+  const response = await fetch(`https://pokeapi.co/api/v2/move?limit=${limit}&offset=${offset}`);
+  return await response.json();
+}
+
+// Función para obtener detalles de un movimiento
+export async function getMoveDetails(name: string) {
+  const response = await fetch(`https://pokeapi.co/api/v2/move/${name}`);
+  const data = await response.json();
+  
+  // Obtener descripción en español
+  const description = data.flavor_text_entries
+    .find((entry: any) => entry.language.name === 'es')?.flavor_text
+    || data.flavor_text_entries
+    .find((entry: any) => entry.language.name === 'en')?.flavor_text
+    || '';
+  
+  return {
+    id: data.id,
+    name: data.name,
+    description: description.replace(/\f/g, ' '),
+    type: data.type.name,
+    power: data.power,
+    accuracy: data.accuracy,
+    pp: data.pp,
+    damageClass: data.damage_class.name,
+    target: data.target.name,
+    effectChance: data.effect_chance
+  };
 }

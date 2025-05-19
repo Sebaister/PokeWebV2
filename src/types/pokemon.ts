@@ -91,6 +91,7 @@ export interface PokemonListResponse {
   }[];
 }
 
+// Tipos para Pokémon procesado
 export interface ProcessedPokemon {
   id: number;
   name: string;
@@ -103,28 +104,86 @@ export interface ProcessedPokemon {
   abilities: {
     name: string;
     isHidden: boolean;
+    description?: string;
   }[];
   height: number;
   weight: number;
-  description?: string;
-  evolutionChain?: ProcessedEvolution[];
-  generation?: string;
-  habitat?: string;
-  isLegendary?: boolean;
-  isMythical?: boolean;
-  color?: string;
+  description: string;
+  evolutionChain: ProcessedEvolution[];
+  generation: string;
+  habitat: string;
+  isLegendary: boolean;
+  isMythical: boolean;
+  color: string;
+  baseExperience?: number;
+  moves?: {
+    name: string;
+    url: string;
+  }[];
+  eggGroups?: string[];
+  genderRate?: number;
+  captureRate?: number;
+  baseHappiness?: number;
+  growthRate?: string;
 }
 
+// Tipos para evolución procesada
 export interface ProcessedEvolution {
-  name: string;
   id: number;
-  image?: string;
-  minLevel?: number | null;
-  trigger?: string | null;
-  item?: string | null;
+  name: string;
+  image: string;
+  types: string[];
+  minLevel: number | null;
+  trigger: string | null;
+  item: string | null;
 }
 
-export const TYPE_COLORS = {
+// Tipos para habilidad procesada
+export interface ProcessedAbility {
+  id: number;
+  name: string;
+  description: string;
+  pokemon: {
+    name: string;
+    url: string;
+    isHidden: boolean;
+  }[];
+}
+
+// Tipos para movimiento procesado
+export interface ProcessedMove {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  power: number | null;
+  accuracy: number | null;
+  pp: number;
+  damageClass: string;
+  target: string;
+  effectChance: number | null;
+}
+
+// Tipos para tipo de Pokémon procesado
+export interface ProcessedType {
+  id: number;
+  name: string;
+  damageRelations: {
+    doubleDamageFrom: string[];
+    doubleDamageTo: string[];
+    halfDamageFrom: string[];
+    halfDamageTo: string[];
+    noDamageFrom: string[];
+    noDamageTo: string[];
+  };
+  pokemon: {
+    name: string;
+    url: string;
+  }[];
+}
+
+// Colores para los tipos de Pokémon
+export const TYPE_COLORS: Record<string, string> = {
   normal: '#A8A878',
   fire: '#F08030',
   water: '#6890F0',
