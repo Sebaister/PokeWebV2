@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pokered: #FF0000;
+  --pokeblue: #3D7DCA;
+  --pokeyellow: #FFCB05;
+  --pokepurple: #7c538c;
+  --pokegreen: #4caf50;
+}
+
+body {
+  font-family: 'Inter var', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.dark {
+  color-scheme: dark;
+}
