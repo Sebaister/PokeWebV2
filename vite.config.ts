@@ -35,5 +35,5 @@ export default defineConfig({
       }
     })
   ],
-  base: './',
+  base: '/PokeWebV2/', // Esto es crucial para GitHub Pages
 })

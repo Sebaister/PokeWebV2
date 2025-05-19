@@ -7,7 +7,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/favicon.svg" alt="PokéDex" className="w-8 h-8" />
+            <img src="./favicon.svg" alt="PokéDex" className="w-8 h-8" />
             <h1 className="text-xl font-bold">PokéDex 2025</h1>
           </Link>
           <nav className="hidden md:flex space-x-6">
