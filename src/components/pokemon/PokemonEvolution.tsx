@@ -9,6 +9,11 @@ interface PokemonEvolutionProps {
 
 export default function PokemonEvolution({ evolutions }: PokemonEvolutionProps) {
   const [evolutionChain, setEvolutionChain] = useState<ProcessedEvolution[][]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
+
+  const handleImageLoad = (id: number) => {
+    setImagesLoaded(prev => ({...prev, [id]: true}));
+  };
 
   useEffect(() => {
     // Organizar las evoluciones en etapas
@@ -80,16 +85,22 @@ export default function PokemonEvolution({ evolutions }: PokemonEvolutionProps) 
                   >
                     <motion.div
                       whileHover={{ scale: 1.1 }}
-                      className="w-24 h-24 flex items-center justify-center"
+                      className="w-24 h-24 flex items-center justify-center relative"
                     >
+                      {!imagesLoaded[pokemon.id] && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="loading loading-spinner loading-sm"></div>
+                        </div>
+                      )}
                       <img 
                         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
                         alt={pokemon.name}
-                        className="max-w-full max-h-full object-contain"
+                        className={`max-w-full max-h-full object-contain ${!imagesLoaded[pokemon.id] ? 'opacity-0' : 'opacity-100'}`}
                         loading="lazy"
+                        onLoad={() => handleImageLoad(pokemon.id)}
                         onError={(e) => {
-                          // Imagen de respaldo si la original falla
                           (e.target as HTMLImageElement).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
+                          handleImageLoad(pokemon.id);
                         }}
                       />
                     </motion.div>
@@ -124,29 +135,3 @@ export default function PokemonEvolution({ evolutions }: PokemonEvolutionProps) 
     </div>
   );
 }
-
-const [imagesLoaded, setImagesLoaded] = useState<Record<number, boolean>>({});
-
-const handleImageLoad = (id: number) => {
-  setImagesLoaded(prev => ({...prev, [id]: true}));
-};
-
-// En el JSX donde está la imagen:
-<>
-  {!imagesLoaded[pokemon.id] && (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="loading loading-spinner loading-sm"></div>
-    </div>
-  )}
-  <img 
-    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
-    alt={pokemon.name}
-    className={`max-w-full max-h-full object-contain ${!imagesLoaded[pokemon.id] ? 'opacity-0' : 'opacity-100'}`}
-    loading="lazy"
-    onLoad={() => handleImageLoad(pokemon.id)}
-    onError={(e) => {
-      (e.target as HTMLImageElement).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
-      handleImageLoad(pokemon.id);
-    }}
-  />
-</>
